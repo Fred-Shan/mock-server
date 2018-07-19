@@ -408,7 +408,7 @@ const data = {
 			"assets": [
 				{
 					"assetId": "8a8181066434b3b10164694fa3ac000f",
-					"description": "SEAL projects for MindSphere_Ali",
+					"description": "description",
 					"name": "3RW51_S4",
 					"parentId": "c27a28b6eb16b507fabc11e75da8b4ce",
 					"tenantId": "chengdu",
@@ -461,16 +461,16 @@ const data = {
 					],
 					"_links": {
 						"self": {
-							"href": "http://139.196.71.174:8080/assets/8a8181066434b3b10164694fa3ac000f"
+							"href": "http://localhost:8080/assets/8a8181066434b3b10164694fa3ac000f"
 						},
 						"parent": {
-							"href": "http://139.196.71.174:8080/assets/c27a28b6eb16b507fabc11e75da8b4ce"
+							"href": "http://localhost:8080/assets/c27a28b6eb16b507fabc11e75da8b4ce"
 						}
 					}
 				},
 				{
 					"assetId": "8a8181066434b3b10164457b4ec40006",
-					"description": "SEAL projects for MindSphere_Ali",
+					"description": "description",
 					"name": "3RW51_S2S3",
 					"parentId": "c27a28b6eb16b507fabc11e75da8b4ce",
 					"tenantId": "chengdu",
@@ -523,16 +523,16 @@ const data = {
 					],
 					"_links": {
 						"self": {
-							"href": "http://139.196.71.174:8080/assets/8a8181066434b3b10164457b4ec40006"
+							"href": "http://localhost:8080/assets/8a8181066434b3b10164457b4ec40006"
 						},
 						"parent": {
-							"href": "http://139.196.71.174:8080/assets/c27a28b6eb16b507fabc11e75da8b4ce"
+							"href": "http://localhost:8080/assets/c27a28b6eb16b507fabc11e75da8b4ce"
 						}
 					}
 				},
 				{
 					"assetId": "8a8181066434b3b101644b08897a0008",
-					"description": "SEAL projects for MindSphere_Ali",
+					"description": "description",
 					"name": "3RW51_Test",
 					"parentId": "c27a28b6eb16b507fabc11e75da8b4ce",
 					"tenantId": "chengdu",
@@ -585,10 +585,10 @@ const data = {
 					],
 					"_links": {
 						"self": {
-							"href": "http://139.196.71.174:8080/assets/8a8181066434b3b101644b08897a0008"
+							"href": "http://localhost:8080/assets/8a8181066434b3b101644b08897a0008"
 						},
 						"parent": {
-							"href": "http://139.196.71.174:8080/assets/c27a28b6eb16b507fabc11e75da8b4ce"
+							"href": "http://localhost:8080/assets/c27a28b6eb16b507fabc11e75da8b4ce"
 						}
 					}
 				}
@@ -596,14 +596,14 @@ const data = {
 		},
 		"_links": {
 			"first": {
-				"href": "http://139.196.71.174:8080/assets?page=0&size=10&sort=name,asc"
+				"href": "http://localhost:8080/assets?page=0&size=10&sort=name,asc"
 			},
 			"self": {
-				"href": "http://139.196.71.174:8080/assets{?filter}",
+				"href": "http://localhost:8080/assets{?filter}",
 				"templated": true
 			},
 			"last": {
-				"href": "http://139.196.71.174:8080/assets?page=1&size=10&sort=name,asc"
+				"href": "http://localhost:8080/assets?page=1&size=10&sort=name,asc"
 			}
 		},
 		"page": {
@@ -640,29 +640,31 @@ const data = {
 	}
 };
 
+const assginValue = (kpi, timestamp, generator) => {
+	for (let key in data[kpi]) {
+		data[kpi][key].push({ _time: timestamp, kpi: generator() });
+	}
+};
+
+const generateNum = () => Math.round(Math.random() * 100);
+
+const generateStatus = (status1, status2) => Math.round(Math.random()) === 0 ? status1 : status2;
+
 module.exports = () => {
 	let counter = 0;
-	for (let key in data.STATUS) {
-		data.STATUS[key].push({ _time: new Date().toISOString(), STATUS: Math.round(Math.random()) === 0 ? 'Stop' : 'Working' });
-	}
+	let timestamp = new Date().toISOString();
+	assginValue('STATUS', timestamp, generateStatus.bind(this, 'Stop', 'Working'));
 	let timer = setInterval(() => {
 		counter += 1;
-		for (let key in data.FPY) {
-			data.FPY[key].push({ _time: new Date().toISOString(), FPY: Math.round(Math.random() * 100) });
-		}
-		for (let key in data.OUTPUT) {
-			data.OUTPUT[key].push({ _time: new Date().toISOString(), OUTPUT: Math.round(Math.random() * 100) });
-		}
+		timestamp = new Date().toISOString();
+		assginValue('FPY', timestamp, generateNum);
+		assginValue('OUTPUT', timestamp, generateNum);
 		if (counter === 3) {
-			for (let key in data.STATUS) {
-				data.STATUS[key].push({ _time: new Date().toISOString(), STATUS: 'abc' });
-			}
+			assginValue('STATUS', timestamp, generateStatus.bind(this, 'abc', 'def'));
 		}
 		if (counter === 6) {
 			counter = 0;
-			for (let key in data.STATUS) {
-				data.STATUS[key].push({ _time: new Date().toISOString(), STATUS: Math.round(Math.random()) === 0 ? 'Stop' : 'Working' });
-			}
+			assginValue('STATUS', timestamp, generateStatus.bind(this, 'Stop', 'Working'));
 		}
 	}, 5000);
 

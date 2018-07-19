@@ -22,7 +22,8 @@ router.render = (req, res) => {
         res.header('Content-Type', 'application/octet-stream');
     }
 
-    if (req.path === '/OUTPUT' || req.path === '/FPY' || req.path === '/STATUS' || req.path === '/ChangeOver' || req.path === '/STOPCODE') {
+    let pathArr = ['/OUTPUT', '/FPY', '/STATUS', '/ChangeOver', '/STOPCODE'];
+    if (pathArr.indexOf(req.path) !== -1) {
         let response = res.locals.data[req.query.assetId];
         if (req.query._time_lte && req.query._time_gte) {
             let _time_lte = new Date(req.query._time_lte);
